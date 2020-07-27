@@ -1,7 +1,8 @@
-import { LitElement, css, html, customElement, property } from 'lit-element';
+import { LitElement, css, html, customElement, property, query } from 'lit-element';
 
 // For more info on the @pwabuilder/pwainstall component click here https://github.com/pwa-builder/pwa-install
 import '@pwabuilder/pwainstall';
+import '@pwabuilder/pwa-inking';
 
 @customElement('app-home')
 export class AppHome extends LitElement {
@@ -10,8 +11,11 @@ export class AppHome extends LitElement {
   // check out this link https://lit-element.polymer-project.org/guide/properties#declare-with-decorators
   @property() message: string = "Welcome!";
 
+  @query('inking-canvas') private inkingCanvas: any;
+
   static get styles() {
     return css`
+
       #welcomeBlock {
         display: flex;
         flex-direction: column;
@@ -58,6 +62,19 @@ export class AppHome extends LitElement {
     // this method is a lifecycle even in lit-element
     // for more info check out the lit-element docs https://lit-element.polymer-project.org/guide/lifecycle
     console.log('This is your home page');
+
+    this.inkingCanvas.requestBlob();
+
+    this.inkingCanvas.addEventListener('inking-canvas-blob-requested', (e: CustomEvent) => {
+      console.log("blob updated event received");
+      console.log(e.detail.blob);
+    }, false);
+
+    this.inkingCanvas.addEventListener('inking-canvas-pointer-move', (e: CustomEvent) => {
+      console.log("pointer move event received");
+      console.log(e.detail);
+    }, false);
+
   }
 
   share() {
@@ -86,6 +103,12 @@ export class AppHome extends LitElement {
           </p>
 
           ${'share' in navigator ? html`<button @click="${this.share}">Share this Starter!</button>` : null}
+        </div>
+
+        </div>
+          <inking-canvas height="500" name="test">
+            <inking-toolbar canvas="test"></inking-toolbar>
+          </inking-canvas>
         </div>
 
         <pwa-install>Install PWA Starter</pwa-install>
