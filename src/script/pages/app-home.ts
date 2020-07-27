@@ -1,8 +1,8 @@
-import { LitElement, css, html, customElement, property, query } from 'lit-element';
+import { LitElement, css, html, customElement, property, query, internalProperty } from 'lit-element';
 
-// For more info on the @pwabuilder/pwainstall component click here https://github.com/pwa-builder/pwa-install
-import '@pwabuilder/pwainstall';
 import '@pwabuilder/pwa-inking';
+
+declare var io: any;
 
 @customElement('app-home')
 export class AppHome extends LitElement {
@@ -12,6 +12,8 @@ export class AppHome extends LitElement {
   @property() message: string = "Welcome!";
 
   @query('inking-canvas') private inkingCanvas: any;
+
+  @internalProperty() socket: any = null;
 
   static get styles() {
     return css`
@@ -46,6 +48,12 @@ export class AppHome extends LitElement {
         cursor: pointer;
       }
 
+      #realTime {
+        position: fixed;
+        bottom: 0;
+        border: solid 2px black;
+      }
+
       @media(spanning: single-fold-vertical) {
         #welcomeBlock {
           width: 50%;
@@ -63,18 +71,87 @@ export class AppHome extends LitElement {
     // for more info check out the lit-element docs https://lit-element.polymer-project.org/guide/lifecycle
     console.log('This is your home page');
 
-    this.inkingCanvas.requestBlob();
+    if (this.inkingCanvas) {
+      this.inkingCanvas.requestBlob();
 
-    this.inkingCanvas.addEventListener('inking-canvas-blob-requested', (e: CustomEvent) => {
-      console.log("blob updated event received");
-      console.log(e.detail.blob);
-    }, false);
+      this.inkingCanvas.addEventListener('inking-canvas-blob-requested', (e: CustomEvent) => {
+        console.log("blob updated event received");
+        console.log(e.detail.blob);
+      }, false);
 
-    this.inkingCanvas.addEventListener('inking-canvas-pointer-move', (e: CustomEvent) => {
-      console.log("pointer move event received");
-      console.log(e.detail);
-    }, false);
+      this.inkingCanvas.addEventListener('inking-canvas-pointer-move', (e: CustomEvent) => {
+        console.log("pointer move event received");
+        console.log(e.detail);
 
+        if (this.socket) {
+          this.socket.emit('drawing', e.detail);
+        }
+      }, false);
+
+    }
+
+    this.socket = this.socket_connect('pwabuilder');
+    this.setupLiveEvents(this.socket);
+
+  }
+
+  socket_connect(room: any) {
+    /*return io('https://inking-server.azurewebsites.net/', {
+      query: 'r_var=' + room
+    });*/
+
+    return io('http://localhost:3000/', {
+      query: 'r_var=' + room
+    });
+  }
+
+  setupLiveEvents(socket: any) {
+    console.log('setting up live events', socket);
+    if (socket) {
+      console.log('in here');
+      const realTimeCanvas = (this.shadowRoot?.querySelector("#realTime") as HTMLCanvasElement);
+      realTimeCanvas.width = window.innerWidth;
+      realTimeCanvas.height = 300;
+
+      const secondContext = realTimeCanvas?.getContext('2d');
+
+      console.log('hello world');
+
+      socket.on('drawing', (data: any) => {
+        console.log('hello world');
+        if (secondContext) {
+          secondContext.strokeStyle = data.color;
+
+          secondContext.globalCompositeOperation = data.globalCompositeOperation;
+
+          if (data.pointerType === 'pen') {
+            let tweakedPressure = data.pressure * 6;
+            secondContext.lineWidth = data.width + tweakedPressure;
+          }
+
+          else if (data.pointerType === 'touch') {
+            secondContext.lineWidth = data.width - 20;
+          }
+          else if (data.pointerType === 'mouse') {
+            secondContext.lineWidth = 4;
+          }
+
+          if (data.globalCompositeOperation === 'destination-out') {
+            secondContext.lineWidth = 18;
+          }
+
+          secondContext.beginPath();
+
+          secondContext.moveTo(data.x0, data.y0);
+
+
+          secondContext.lineTo(data.x1, data.y1);
+
+
+          secondContext.stroke();
+        }
+      })
+    }
   }
 
   share() {
@@ -91,27 +168,15 @@ export class AppHome extends LitElement {
     return html`
       <div>
 
-        <div id="welcomeBlock">
-
-          <img src="assets/icons/icon_512.png" alt="app icon">
-          <h2>${this.message}</h2>
-
-          <p>
-            Welcome to the <a href="https://pwabuilder.com">PWABuilder</a> pwa-starter!
-
-            Be sure to head back to <a href="https://pwabuilder.com">PWABuilder</a> when you are ready to ship this PWA to the Microsoft, Google Play and Samsung Galaxy stores!
-          </p>
-
-          ${'share' in navigator ? html`<button @click="${this.share}">Share this Starter!</button>` : null}
-        </div>
-
-        </div>
+        <div>
           <inking-canvas height="500" name="test">
             <inking-toolbar canvas="test"></inking-toolbar>
           </inking-canvas>
-        </div>
 
-        <pwa-install>Install PWA Starter</pwa-install>
+          <p>Real-time canvas</p>
+
+          <canvas id="realTime"></canvas>
+        </div>
       </div>
     `;
   }
