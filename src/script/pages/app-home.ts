@@ -96,13 +96,13 @@ export class AppHome extends LitElement {
   }
 
   socket_connect(room: any) {
-    /*return io('https://inking-server.azurewebsites.net/', {
-      query: 'r_var=' + room
-    });*/
-
-    return io('http://localhost:3000/', {
+    return io('https://inking-server.azurewebsites.net/', {
       query: 'r_var=' + room
     });
+
+    /*return io('http://localhost:3000/', {
+      query: 'r_var=' + room
+    });*/
   }
 
   setupLiveEvents(socket: any) {
@@ -113,42 +113,47 @@ export class AppHome extends LitElement {
       realTimeCanvas.width = window.innerWidth;
       realTimeCanvas.height = 300;
 
-      const secondContext = realTimeCanvas?.getContext('2d');
+      const realTimeContext = realTimeCanvas?.getContext('2d');
 
       console.log('hello world');
 
       socket.on('drawing', (data: any) => {
         console.log('hello world');
-        if (secondContext) {
-          secondContext.strokeStyle = data.color;
+        if (realTimeContext) {
+          realTimeContext.strokeStyle = data.color;
 
-          secondContext.globalCompositeOperation = data.globalCompositeOperation;
+          realTimeContext.globalCompositeOperation = data.globalCompositeOperation;
 
           if (data.pointerType === 'pen') {
             let tweakedPressure = data.pressure * 6;
-            secondContext.lineWidth = data.width + tweakedPressure;
+            realTimeContext.lineWidth = data.width + tweakedPressure;
           }
 
           else if (data.pointerType === 'touch') {
-            secondContext.lineWidth = data.width - 20;
+            realTimeContext.lineWidth = data.width - 20;
           }
           else if (data.pointerType === 'mouse') {
-            secondContext.lineWidth = 4;
+            realTimeContext.lineWidth = 4;
           }
 
           if (data.globalCompositeOperation === 'destination-out') {
-            secondContext.lineWidth = 18;
+            realTimeContext.lineWidth = 18;
           }
 
-          secondContext.beginPath();
+          realTimeContext.beginPath();
 
-          secondContext.moveTo(data.x0, data.y0);
-
-
-          secondContext.lineTo(data.x1, data.y1);
+          realTimeContext.moveTo(data.x0, data.y0);
 
 
-          secondContext.stroke();
+          realTimeContext.lineTo(data.x1, data.y1);
+
+
+          realTimeContext.stroke();
+
+          realTimeContext.lineCap = 'round';
+          realTimeContext.lineJoin = 'round';
+
+          realTimeContext.closePath();
         }
       })
     }
