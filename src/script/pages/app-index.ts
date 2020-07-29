@@ -5,7 +5,6 @@ import './app-home';
 import { Router } from '@vaadin/router';
 
 import '../components/header';
-import '../components/userdisplay';
 
 import '@pwabuilder/pwa-inking';
 
@@ -81,7 +80,7 @@ export class AppIndex extends LitElement {
             path: "/launchhost",
             component: "app-launchhost",
             action: async () => {
-              await import('./app-launchhost.js');
+              await import('./app-launchHost.js');
             },
           },
           {

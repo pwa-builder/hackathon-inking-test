@@ -2,7 +2,7 @@ import { LitElement, css, html, customElement, property } from 'lit-element';
 
 
 @customElement('app-userdisplay')
-export class AppHeader extends LitElement {
+export class AppUserDisplay extends LitElement {
 
   @property({ type: String }) title: string = 'Scuttlebutt';
 

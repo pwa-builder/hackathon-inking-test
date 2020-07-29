@@ -1,5 +1,6 @@
 import { LitElement, css, html, customElement } from 'lit-element';
 
+import '../components/userdisplay';
 
 @customElement('app-launchhost')
 export class AppLaunchHost extends LitElement {
