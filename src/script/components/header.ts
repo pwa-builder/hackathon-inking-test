@@ -1,10 +1,10 @@
 import { LitElement, css, html, customElement, property } from 'lit-element';
-
+import {gametitle} from '../locales/en';
 
 @customElement('app-header')
 export class AppHeader extends LitElement {
 
-  @property({ type: String }) title: string = 'Scuttlebutt';
+  @property({ type: String }) title: string = gametitle;
 
   static get styles() {
     return css`
