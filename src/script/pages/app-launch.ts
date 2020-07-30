@@ -8,14 +8,6 @@ export class AppLaunch extends LitElement {
     return css`
     #main {
         text-align: center;
-    }
-
-    #launchOption {
-        padding: 10px;
-        background-color: lightblue;
-    }
-
-    #main {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -39,7 +31,19 @@ export class AppLaunch extends LitElement {
       color: #333333; 
     }
 
-    
+    #logo {      
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 5%;
+    }
+       
+    #launchOption {
+      display: inline-block;
+      padding: 10px;
+      background-color: lightblue;
+    }
+
     `;
   }
 
@@ -52,6 +56,8 @@ export class AppLaunch extends LitElement {
       <div id="main">
       <h3 id="greeting">${greeting}</h3>
       <app-userdisplay></app-userdisplay>
+
+      <img id="logo" src="assets/images/logo.svg">
 
       <span class="options">
         <a id="launchOption" href="./launchhost">Host a game</a>
