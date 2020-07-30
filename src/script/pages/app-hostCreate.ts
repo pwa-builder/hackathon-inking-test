@@ -1,9 +1,9 @@
 import { LitElement, css, html, customElement } from 'lit-element';
-import { greetinghost } from '../locales/en';
+import { greetinghostcreate } from '../locales/en';
 
 
-@customElement('app-launchhost')
-export class AppLaunchHost extends LitElement {
+@customElement('app-hostcreate')
+export class AppHostCreate extends LitElement {
 
   static get styles() {
     return css`
@@ -79,11 +79,9 @@ export class AppLaunchHost extends LitElement {
   render() {
     return html`
       <div id="main">
-      <h3 id="greeting">${greetinghost}</h3>
-      <div class="options">
-        <a id="hostOptionCreate" href="./create"><img id="create" src="assets/images/button_create.svg"></a>
-        <a id="hostOptionCalendar" href=""><img id="calendar" src="assets/images/button_calendar.svg"></a>
-      </span>
+      <h3 id="greeting">${greetinghostcreate}</h3>
+      <img src="assets/images/code_generated.svg">
+      <a href="./play"><img src="assets/images/button_start.svg"></a>
       </div>
     `;
   }

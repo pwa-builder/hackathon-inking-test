@@ -92,6 +92,13 @@ export class AppIndex extends LitElement {
             },
           },
           {
+            path: "/create",
+            component: "app-hostcreate",
+            action: async () => {
+              await import('./app-hostcreate.js');
+            },
+          },
+          {
             path: "/play",
             component: "app-play",
             action: async () => {
