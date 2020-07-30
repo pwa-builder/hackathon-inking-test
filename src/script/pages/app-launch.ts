@@ -56,8 +56,6 @@ export class AppLaunch extends LitElement {
     #launchOptionJoin:hover {
       background-image: url('assets/images/button_join_pressed.svg');
     }
-
-
     `;
   }
 
