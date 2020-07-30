@@ -32,16 +32,15 @@ export class AppLaunch extends LitElement {
     }
 
     #logo {      
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      padding-top: 5%;
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%) }
     }
        
     #launchOption {
-      display: inline-block;
-      padding: 10px;
-      background-color: lightblue;
     }
 
     `;
