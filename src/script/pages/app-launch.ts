@@ -37,11 +37,26 @@ export class AppLaunch extends LitElement {
       top: 50%;
       left: 50%;
       margin-right: -50%;
-      transform: translate(-50%, -50%) }
+      transform: translate(-50%, -50%);
     }
        
-    #launchOption {
+    .options {
+      margin: 0;
+      position: absolute;
+      top: 85%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%);
     }
+
+    #launchOptionHost:hover {
+      background-image: url('assets/images/button_host_pressed.svg');
+    }
+
+    #launchOptionJoin:hover {
+      background-image: url('assets/images/button_join_pressed.svg');
+    }
+
 
     `;
   }
@@ -59,8 +74,8 @@ export class AppLaunch extends LitElement {
       <img id="logo" src="assets/images/logo.svg">
 
       <span class="options">
-        <a id="launchOption" href="./launchhost">Host a game</a>
-        <a id="launchOption" href="./launchjoin">Join a game</a>
+        <a id="launchOptionHost" href="./launchhost"><img id="host" src="assets/images/button_host.svg"></a>
+        <a id="launchOptionJoin" href="./launchjoin"><img id="join" src="assets/images/button_join.svg"></a>
       </span>
       </div>
     `;
